@@ -1,0 +1,829 @@
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>課題研究公開ポータル</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Noto Sans JP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        /* スムーズなスクロール */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- ヘッダー -->
+    <header class="bg-gradient-to-r from-teal-700 to-emerald-800 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-white text-teal-800 p-2 rounded-lg font-bold text-sm tracking-wider">
+                    課題研究
+                </div>
+                <div>
+                    <h1 id="header-title" class="text-lg sm:text-xl font-bold">研究テーマ</h1>
+                    <p id="header-school" class="text-xs text-teal-100">学校名 / チーム名</p>
+                </div>
+            </div>
+            <div class="flex gap-2 text-sm">
+                <button onclick="switchTab('overview')" id="btn-tab-overview" class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition font-medium">研究概要</button>
+                <button onclick="switchTab('timeline')" id="btn-tab-timeline" class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition font-medium">活動・追記ログ</button>
+                <button onclick="toggleAdminModal(true)" class="px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white transition font-medium flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    かんたん追記・編集
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <!-- 左サイドバー（基本情報） -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- プロフィール・基本情報カード -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">研究情報</h2>
+                    
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <span class="block text-xs text-slate-400">所属・学校名</span>
+                            <span id="sidebar-school" class="font-bold text-slate-700">--</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs text-slate-400">研究者 / メンバー</span>
+                            <span id="sidebar-team" class="font-medium text-slate-700 whitespace-pre-line">--</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs text-slate-400">研究期間</span>
+                            <span id="sidebar-period" class="font-medium text-slate-700">--</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-slate-100">
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+                            <span>活動記録数</span>
+                            <span id="stat-updates-count" class="font-bold text-teal-600 text-sm">0件</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>最終更新日</span>
+                            <span id="stat-last-updated" class="font-bold text-teal-600 text-sm">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- クイックリンク・目次 -->
+                <div id="quick-nav-card" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hidden lg:block">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">研究章構成</h2>
+                    <nav id="sidebar-toc" class="space-y-2 text-sm">
+                        <!-- 動的に挿入 -->
+                    </nav>
+                </div>
+            </div>
+
+            <!-- 右メインコンテンツエリア -->
+            <div class="lg:col-span-3 space-y-8">
+                
+                <!-- カスタム通知メッセージ用コンテナ -->
+                <div id="toast-message" class="hidden bg-emerald-100 border border-emerald-300 text-emerald-800 px-4 py-3 rounded-xl relative transition-all duration-300 flex justify-between items-center" role="alert">
+                    <span id="toast-text" class="text-sm font-medium">メッセージ</span>
+                    <button onclick="hideToast()" class="text-emerald-800 hover:text-emerald-950">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <!-- 1. 研究概要・本文 タブ -->
+                <div id="tab-content-overview" class="space-y-8">
+                    <!-- アブストラクト（概要） -->
+                    <div class="bg-gradient-to-br from-teal-50 to-emerald-50 p-6 sm:p-8 rounded-2xl border border-teal-100 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 transform translate-x-4 -translate-y-4 opacity-5 pointer-events-none">
+                            <svg class="w-64 h-64 text-teal-900" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        </div>
+                        <h2 class="text-lg font-bold text-teal-900 mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-teal-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            研究要旨 (Abstract)
+                        </h2>
+                        <p id="main-abstract" class="text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-wrap">
+                            --
+                        </p>
+                    </div>
+
+                    <!-- 各研究セクション（本文） -->
+                    <div id="research-sections-container" class="space-y-8">
+                        <!-- JSで動的に構築されます -->
+                    </div>
+                </div>
+
+                <!-- 2. 活動・追記ログ タブ -->
+                <div id="tab-content-timeline" class="space-y-6 hidden">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">活動・追記ログ</h2>
+                            <p class="text-xs text-slate-500 mt-1">日々の実験、考察、進捗状況を新しい順に公開しています。</p>
+                        </div>
+                        <button onclick="toggleAdminModal(true)" class="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 px-3 py-1.5 rounded-lg border border-teal-200 transition font-medium flex items-center gap-1">
+                            + 新しい記録を追記
+                        </button>
+                    </div>
+
+                    <!-- タイムラインのコンテナ -->
+                    <div id="timeline-container" class="relative border-l-2 border-slate-200 ml-4 pl-6 space-y-8 py-2">
+                        <!-- JSで動的に構築されます -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+            <p id="footer-school-name" class="text-sm font-medium text-slate-300">--</p>
+            <p class="text-xs">© <span id="footer-year">2026</span> 課題研究プロジェクト. All Rights Reserved.</p>
+            <p class="text-[10px] text-slate-600">本Webサイトは高校の課題研究発表用テンプレートを使用しています。</p>
+        </div>
+    </footer>
+
+
+    <!-- ==============================================
+         かんたん追記・編集モーダル（管理用ポップアップ）
+         ============================================== -->
+    <div id="admin-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden transform scale-95 transition-all duration-300" id="admin-modal-content">
+            
+            <!-- モーダルヘッダー -->
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        研究内容の追記・かんたん編集
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-0.5">※ブラウザ上で変更・追加し、最後にHTMLに貼り付ける用コードを出力します。</p>
+                </div>
+                <button onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-white transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- タブ切り替えボタン -->
+            <div class="flex border-b border-slate-200 bg-slate-50 text-sm">
+                <button onclick="switchAdminTab('basic')" id="admin-tab-basic" class="flex-1 py-3 px-4 text-center font-medium border-b-2 border-teal-600 text-teal-600 transition">① 基本情報の修正</button>
+                <button onclick="switchAdminTab('add-update')" id="admin-tab-add-update" class="flex-1 py-3 px-4 text-center font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900 transition">② ログの追記 (活動・進捗)</button>
+                <button onclick="switchAdminTab('sections')" id="admin-tab-sections" class="flex-1 py-3 px-4 text-center font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900 transition">③ 本文・章の編集</button>
+            </div>
+
+            <!-- モーダルボディ（スクロール可能） -->
+            <div class="p-6 overflow-y-auto flex-grow space-y-6 text-sm">
+                
+                <!-- タブ1: 基本情報の修正 -->
+                <div id="admin-content-basic" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">研究テーマ（タイトル）</label>
+                        <input type="text" id="edit-title" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">所属・学校名</label>
+                            <input type="text" id="edit-school" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">研究期間</label>
+                            <input type="text" id="edit-period" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="例: 2026年4月 〜 現在">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">研究メンバー</label>
+                        <textarea id="edit-team" rows="2" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="例: 理数科 生物班 (代表: 山田太郎, 共同研究者: 佐藤花子)"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">研究要旨 (Abstract)</label>
+                        <textarea id="edit-abstract" rows="4" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="研究の全体像、目的、方法、結果を簡潔にまとめます。"></textarea>
+                    </div>
+                </div>
+
+                <!-- タブ2: ログの追記 -->
+                <div id="admin-content-add-update" class="space-y-4 hidden">
+                    <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-800 text-xs">
+                        新しい実験データ、考察、文献調査などの進捗を追加できます。
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">日付</label>
+                            <input type="date" id="new-update-date" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">活動カテゴリ</label>
+                            <select id="new-update-category" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                                <option value="実験・計測">🧪 実験・計測</option>
+                                <option value="データ分析">📊 データ分析</option>
+                                <option value="フィールドワーク">🗺️ フィールドワーク</option>
+                                <option value="文献調査">📚 文献調査</option>
+                                <option value="考察・会議">🗣️ 考察・会議</option>
+                                <option value="発表準備">📝 発表準備・その他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">進捗タイトル</label>
+                        <input type="text" id="new-update-title" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="例: 紫外線照射における発芽数の第1次計測完了">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">活動・進捗の内容（詳細）</label>
+                        <textarea id="new-update-text" rows="4" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="どのような実験を行い、何が判明したか。失敗談や新たな仮説も記録として残すと効果的です。"></textarea>
+                    </div>
+                    <button type="button" onclick="addNewUpdateItem()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition">
+                        活動ログに追加する
+                    </button>
+
+                    <!-- 既存のログのリスト（削除用） -->
+                    <div class="mt-6">
+                        <h4 class="font-bold text-slate-700 mb-2 border-b pb-1 text-xs uppercase tracking-wider">現在登録されているログの一覧</h4>
+                        <div id="admin-current-updates-list" class="space-y-2 max-h-40 overflow-y-auto pr-2">
+                            <!-- JSで動的に構築されます -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- タブ3: 本文・章の編集 -->
+                <div id="admin-content-sections" class="space-y-4 hidden">
+                    <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-800 text-xs">
+                        「研究背景」「方法」「結果」などの固定章のテキストを直接書き換え・追加できます。
+                    </div>
+                    
+                    <div id="admin-sections-list" class="space-y-4">
+                        <!-- 動的に章ごとの入力欄を生成します -->
+                    </div>
+                </div>
+
+                <!-- 共通: コードの出力セクション -->
+                <div class="border-t border-slate-200 pt-6 mt-6 space-y-4">
+                    <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+                        <h4 class="font-bold text-emerald-900 mb-1 flex items-center gap-1">
+                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                            HTMLへ変更を保存する方法
+                        </h4>
+                        <p class="text-xs text-emerald-700 leading-relaxed mb-3">
+                            上のタブで追加・修正を行ったら、必ず下の「設定コードを出力」を押し、コピーした内容をこの `index.html` ファイルの <b>365行目付近（const RESEARCH_DATA = ...）</b> にそのまま貼り付けて上書き保存してください。
+                        </p>
+                        <div class="flex gap-2">
+                            <button onclick="generateExportCode()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition">
+                                ① 設定コードを出力する
+                            </button>
+                            <button onclick="copyExportCode()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-bold text-xs transition">
+                                ② 出力されたコードをコピー
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <textarea id="export-textarea" readonly class="w-full h-48 font-mono text-xs bg-slate-900 text-slate-300 p-3 rounded-lg focus:outline-none" placeholder="「設定コードを出力する」ボタンを押すと、ここに保存用コードが書き出されます。"></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- モーダルフッター -->
+            <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex justify-end gap-2">
+                <button onclick="toggleAdminModal(false)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-lg transition">
+                    閉じる (画面上でプレビュー)
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ==============================================
+         研究データ（データベースの代わりとなるデータ構造）
+         ============================================== -->
+    <script>
+        // 【最重要】追記やテーマ変更は、ここを直接書き換えるだけでも完結します！
+        // モーダルの「コード出力機能」を使うと、ここを自動で生成してくれます。
+        let RESEARCH_DATA = {
+  "title": "身近なバイオプラスチック：デンプンを用いた生分解性樹脂の作製と強度向上",
+  "school": "〇〇県立みらい高等学校 理数科2年",
+  "team": "化学研究班（共同研究：山田 太郎, 佐藤 花子, 鈴木 一郎）",
+  "period": "2025年4月 〜 2026年3月",
+  "abstract": "プラスチックごみ問題の解決に向けて、トウモロコシやジャガイモなどのデンプンから作成可能な生分解性プラスチックの自作と、その脆弱な「引張強度」の向上を試みました。添加物（グリセリン、クエン酸、キトサン）の比率を調整し、家庭用電子レンジ等を応用して作成。各組成における引張強度と水中での生分解性の変化を検証しました。",
+  "sections": [
+    {
+      "id": "intro",
+      "title": "1. 研究の背景と目的",
+      "content": "現在、石油由来のプラスチックによる地球環境の汚染や海洋生態系への影響が深刻な問題となっています。代替素材として「生分解性プラスチック」が注目されていますが、市販のものは高価であり、製造工程が複雑です。\n本研究では、最も入手が容易な「デンプン」を主原料として用い、家庭や高校の実験室レベルで簡単に作製できる生分解性プラスチックのレシピを確立すること、そして実用レベルに近づけるための強度向上を目的としました。"
+    },
+    {
+      "id": "method",
+      "title": "2. 実験方法",
+      "content": "ジャガイモデンプン（片栗粉）10gに対し、水50ml、グリセリン（可塑剤として添加）3ml、および各種添加物を混ぜ合わせて加熱し、ガラス板上に薄く引き延ばして乾燥させてフィルム状の試験片を作製しました。\n\n【強度の検討条件】\n・条件A：添加物なし（基本レシピ）\n・条件B：クエン酸（架橋剤）1gを添加\n・条件C：キトサン粉末（補強材）0.5gを添加\n\n【評価方法】\n自作の簡易引張強度測定器を用い、試験片が破断した際のおもりの総重量から強度を換算しました。"
+    },
+    {
+      "id": "results",
+      "title": "3. 実験結果と考察",
+      "content": "【引張強度の測定結果】\n・基本レシピ（条件A）に比べ、クエン酸を添加した条件Bでは強度が約1.5倍に増加しました。これはデンプンの分子間でクエン酸による架橋構造が形成されたためと考えられます。\n・さらにキトサンを添加した条件Cでは、強度が約2.2倍になり、乾燥時のひび割れも減少することが判明しました。\n\n【生分解性の検証】\n学校の土壌（深さ10cm）に各フィルムを埋め、2週間ごとの重量変化を観察しました。結果として、いずれの試験片も4週間で80%以上の重量が減少し、微生物による良好な生分解性が確認されました。"
+    },
+    {
+      "id": "future",
+      "title": "4. 今後の展望・課題",
+      "content": "今回得られた生分解性プラスチックは、強度の大幅な向上に成功したものの、「耐水性」が非常に低いという弱点があります。水滴が付着すると数分でふやけてしまうため、実用化（農業用マルチシートやレジ袋など）に向けては疎水性の向上や、天然のワックスを用いた表面コーティングの実験を進める必要があります。"
+    }
+  ],
+  "updates": [
+    {
+      "date": "2026-03-10",
+      "category": "発表準備",
+      "title": "校内課題研究発表会にて最優秀賞を受賞！",
+      "text": "本日の校内研究発表会にて、口頭発表およびポスターセッションを行い、「最優秀賞（化学部門）」をいただくことができました！先生方から頂いた耐水性の検証方法に関するアドバイスを活かし、さらに研究を発展させます。"
+    },
+    {
+      "date": "2026-01-20",
+      "category": "データ分析",
+      "title": "土壌埋没実験4週間目の生分解率算出",
+      "text": "土壌に埋めていた試験片を取り出し、乾燥させて重量を再計測しました。キトサン添加型についても、当初の懸念に反して通常型とほぼ同等のスピード（4週間で約82%減）で分解が進行していることを確認しました。"
+    },
+    {
+      "date": "2025-11-15",
+      "category": "実験・計測",
+      "title": "キトサンを配合した新型フィルムの引張強度試験",
+      "text": "甲殻類の殻から抽出されたキトサンを微量ブレンドしたところ、これまでのレシピの中で最も破断しにくい高強度のプラスチックシートを得ることに成功しました。測定器でおもり1.2kgまで耐える頑丈さを見せました。"
+    },
+    {
+      "date": "2025-09-05",
+      "category": "フィールドワーク",
+      "title": "学校の裏山にて生分解実験用土壌のサンプリング",
+      "text": "埋設実験に向けて、微生物の活性が異なる「校庭の砂」「裏山の腐葉土」「川辺の湿地泥」の3パターンの土を採取し、プランターにセットしました。土壌環境による分解スピードの差異も合わせて検証します。"
+    }
+  ]
+};
+    </script>
+
+    <!-- ==============================================
+         Webページ制御・レンダリングJS
+         ============================================== -->
+    <script>
+        // 起動時にデータを画面に反映
+        window.onload = function() {
+            renderAll();
+            // 現在の年を設定
+            document.getElementById('footer-year').innerText = new Date().getFullYear();
+        };
+
+        // UI切り替えのアクティブタブ
+        let activeTab = 'overview';
+
+        // 表示の初期化と全レンダリング
+        function renderAll() {
+            // ヘッダー情報
+            document.getElementById('header-title').innerText = RESEARCH_DATA.title;
+            document.getElementById('header-school').innerText = RESEARCH_DATA.school;
+
+            // サイドバー情報
+            document.getElementById('sidebar-school').innerText = RESEARCH_DATA.school;
+            document.getElementById('sidebar-team').innerText = RESEARCH_DATA.team;
+            document.getElementById('sidebar-period').innerText = RESEARCH_DATA.period;
+            document.getElementById('footer-school-name').innerText = RESEARCH_DATA.school + " " + RESEARCH_DATA.team;
+
+            // 要旨
+            document.getElementById('main-abstract').innerText = RESEARCH_DATA.abstract;
+
+            // サイドバー目次（TOC）の描画
+            renderTOC();
+
+            // 本文セクションの描画
+            renderSections();
+
+            // タイムラインの描画
+            renderTimeline();
+
+            // 統計データの算出・表示
+            updateStats();
+        }
+
+        // サイドバー目次の描画
+        function renderTOC() {
+            const tocContainer = document.getElementById('sidebar-toc');
+            tocContainer.innerHTML = '';
+
+            // まず要旨へのリンク
+            const abstractLink = document.createElement('a');
+            abstractLink.href = '#main-abstract';
+            abstractLink.className = 'block py-1 px-2 rounded hover:bg-slate-100 text-slate-600 hover:text-teal-800 transition font-medium';
+            abstractLink.innerHTML = `<span class="text-xs text-teal-600 mr-1.5">◆</span>研究要旨`;
+            tocContainer.appendChild(abstractLink);
+
+            // 各セクションのリンク
+            RESEARCH_DATA.sections.forEach(section => {
+                const link = document.createElement('a');
+                link.href = `#sec-${section.id}`;
+                link.className = 'block py-1 px-2 rounded hover:bg-slate-100 text-slate-600 hover:text-teal-800 transition truncate';
+                link.innerHTML = `<span class="text-xs text-teal-600 mr-1.5">■</span>${section.title}`;
+                tocContainer.appendChild(link);
+            });
+        }
+
+        // 研究本文（各章）の描画
+        function renderSections() {
+            const container = document.getElementById('research-sections-container');
+            container.innerHTML = '';
+
+            RESEARCH_DATA.sections.forEach(sec => {
+                const sectionHtml = `
+                    <section id="sec-${sec.id}" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-100 scroll-mt-24">
+                        <h3 class="text-lg sm:text-xl font-bold text-slate-950 pb-3 border-b-2 border-teal-500 mb-4 flex justify-between items-center">
+                            <span>${escapeHTML(sec.title)}</span>
+                            <span class="text-xs text-slate-300 font-mono font-normal">#sec-${sec.id}</span>
+                        </h3>
+                        <p class="text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-wrap">${escapeHTML(sec.content)}</p>
+                    </section>
+                `;
+                container.insertAdjacentHTML('beforeend', sectionHtml);
+            });
+        }
+
+        // タイムライン（追記ログ）の描画
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '';
+
+            if (RESEARCH_DATA.updates.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-sm">
+                        活動ログがまだ登録されていません。上の「かんたん追記」ボタンから最初の1件を投稿しましょう！
+                    </div>
+                `;
+                return;
+            }
+
+            // 日付順に並び替え (新しい順)
+            const sortedUpdates = [...RESEARCH_DATA.updates].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sortedUpdates.forEach(update => {
+                // カテゴリに応じたラベル色を設定
+                let badgeClass = 'bg-slate-100 text-slate-700';
+                if (update.category === '実験・計測') badgeClass = 'bg-teal-50 text-teal-700 border border-teal-200';
+                else if (update.category === 'データ分析') badgeClass = 'bg-blue-50 text-blue-700 border border-blue-200';
+                else if (update.category === 'フィールドワーク') badgeClass = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                else if (update.category === '文献調査') badgeClass = 'bg-indigo-50 text-indigo-700 border border-indigo-200';
+                else if (update.category === '考察・会議') badgeClass = 'bg-amber-50 text-amber-700 border border-amber-200';
+                else if (update.category === '発表準備') badgeClass = 'bg-rose-50 text-rose-700 border border-rose-200';
+
+                const logHtml = `
+                    <div class="relative pl-2 group">
+                        <!-- タイムラインのピン -->
+                        <span class="absolute -left-[31px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white border-2 border-teal-600 group-hover:scale-125 transition-all">
+                            <span class="h-1.5 w-1.5 rounded-full bg-teal-600"></span>
+                        </span>
+                        
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition duration-300">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-semibold text-teal-800 font-mono">${escapeHTML(update.date)}</span>
+                                    <span class="text-xs px-2.5 py-0.5 rounded-full font-bold ${badgeClass}">
+                                        ${escapeHTML(update.category || 'その他')}
+                                    </span>
+                                </div>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-base mb-1.5">${escapeHTML(update.title)}</h4>
+                            <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">${escapeHTML(update.text)}</p>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', logHtml);
+            });
+        }
+
+        // 統計データの更新
+        function updateStats() {
+            document.getElementById('stat-updates-count').innerText = `${RESEARCH_DATA.updates.length} 件`;
+            
+            if (RESEARCH_DATA.updates.length > 0) {
+                const dates = RESEARCH_DATA.updates.map(u => new Date(u.date));
+                const latestDate = new Date(Math.max(...dates));
+                
+                const yyyy = latestDate.getFullYear();
+                const mm = String(latestDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(latestDate.getDate()).padStart(2, '0');
+                document.getElementById('stat-last-updated').innerText = `${yyyy}/${mm}/${dd}`;
+            } else {
+                document.getElementById('stat-last-updated').innerText = '--';
+            }
+        }
+
+        // タブ切り替え制御
+        function switchTab(tabId) {
+            activeTab = tabId;
+            const tabOverview = document.getElementById('tab-content-overview');
+            const tabTimeline = document.getElementById('tab-content-timeline');
+            const quickNav = document.getElementById('quick-nav-card');
+            
+            const btnOverview = document.getElementById('btn-tab-overview');
+            const btnTimeline = document.getElementById('btn-tab-timeline');
+
+            if (tabId === 'overview') {
+                tabOverview.classList.remove('hidden');
+                tabTimeline.classList.add('hidden');
+                quickNav.classList.remove('hidden');
+                btnOverview.classList.add('bg-white', 'text-teal-900');
+                btnOverview.classList.remove('bg-white/10', 'text-white');
+                btnTimeline.classList.add('bg-white/10', 'text-white');
+                btnTimeline.classList.remove('bg-white', 'text-teal-900');
+            } else {
+                tabOverview.classList.add('hidden');
+                tabTimeline.classList.remove('hidden');
+                quickNav.classList.add('hidden');
+                btnTimeline.classList.add('bg-white', 'text-teal-900');
+                btnTimeline.classList.remove('bg-white/10', 'text-white');
+                btnOverview.classList.add('bg-white/10', 'text-white');
+                btnOverview.classList.remove('bg-white', 'text-teal-900');
+            }
+        }
+
+        // ==============================================
+        // 管理ポップアップ（モーダル）制御ロジック
+        // ==============================================
+        let activeAdminTab = 'basic';
+
+        function toggleAdminModal(show) {
+            const modal = document.getElementById('admin-modal');
+            const content = document.getElementById('admin-modal-content');
+            if (show) {
+                // 現在のデータをインプット枠に反映
+                document.getElementById('edit-title').value = RESEARCH_DATA.title;
+                document.getElementById('edit-school').value = RESEARCH_DATA.school;
+                document.getElementById('edit-period').value = RESEARCH_DATA.period;
+                document.getElementById('edit-team').value = RESEARCH_DATA.team;
+                document.getElementById('edit-abstract').value = RESEARCH_DATA.abstract;
+
+                // 本日日付を初期セット
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('new-update-date').value = today;
+
+                // 管理モーダルの章編集エリア構築
+                renderAdminSectionsInputs();
+
+                // 削除用ログリストの構築
+                renderAdminCurrentUpdatesList();
+
+                // クリア
+                document.getElementById('export-textarea').value = '';
+
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                }, 10);
+            } else {
+                // 画面を閉じるときに一時反映
+                saveDraftData();
+                renderAll();
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 200);
+            }
+        }
+
+        function switchAdminTab(tabId) {
+            activeAdminTab = tabId;
+            const tabBasic = document.getElementById('admin-tab-basic');
+            const tabAddUpdate = document.getElementById('admin-tab-add-update');
+            const tabSections = document.getElementById('admin-tab-sections');
+
+            const contentBasic = document.getElementById('admin-content-basic');
+            const contentAddUpdate = document.getElementById('admin-content-add-update');
+            const contentSections = document.getElementById('admin-content-sections');
+
+            // 一時保存
+            saveDraftData();
+
+            // Tab Buttons Active Styling
+            [tabBasic, tabAddUpdate, tabSections].forEach(el => {
+                el.classList.remove('border-teal-600', 'text-teal-600');
+                el.classList.add('border-transparent', 'text-slate-600');
+            });
+            // Content Sections Toggle
+            [contentBasic, contentAddUpdate, contentSections].forEach(el => el.classList.add('hidden'));
+
+            if (tabId === 'basic') {
+                tabBasic.classList.add('border-teal-600', 'text-teal-600');
+                contentBasic.classList.remove('hidden');
+            } else if (tabId === 'add-update') {
+                tabAddUpdate.classList.add('border-teal-600', 'text-teal-600');
+                contentAddUpdate.classList.remove('hidden');
+                renderAdminCurrentUpdatesList();
+            } else if (tabId === 'sections') {
+                tabSections.classList.add('border-teal-600', 'text-teal-600');
+                contentSections.classList.remove('hidden');
+                renderAdminSectionsInputs();
+            }
+        }
+
+        // 入力フォームから変数への一時セーブ
+        function saveDraftData() {
+            RESEARCH_DATA.title = document.getElementById('edit-title').value;
+            RESEARCH_DATA.school = document.getElementById('edit-school').value;
+            RESEARCH_DATA.period = document.getElementById('edit-period').value;
+            RESEARCH_DATA.team = document.getElementById('edit-team').value;
+            RESEARCH_DATA.abstract = document.getElementById('edit-abstract').value;
+
+            // 本文章の一時保存
+            RESEARCH_DATA.sections.forEach(sec => {
+                const titleEl = document.getElementById(`edit-sec-title-${sec.id}`);
+                const contentEl = document.getElementById(`edit-sec-content-${sec.id}`);
+                if (titleEl && contentEl) {
+                    sec.title = titleEl.value;
+                    sec.content = contentEl.value;
+                }
+            });
+        }
+
+        // 管理画面用の章テキスト入力フィールド生成
+        function renderAdminSectionsInputs() {
+            const container = document.getElementById('admin-sections-list');
+            container.innerHTML = '';
+
+            RESEARCH_DATA.sections.forEach(sec => {
+                const item = `
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-slate-500 uppercase">識別子: ${sec.id}</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">章タイトル</label>
+                                <input type="text" id="edit-sec-title-${sec.id}" value="${escapeHTML(sec.title)}" class="w-full border border-slate-200 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">本文内容</label>
+                                <textarea id="edit-sec-content-${sec.id}" rows="4" class="w-full border border-slate-200 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-teal-500 focus:outline-none">${escapeHTML(sec.content)}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', item);
+            });
+        }
+
+        // 管理画面内の、現在ログ一覧の描画（削除機能用）
+        function renderAdminCurrentUpdatesList() {
+            const listContainer = document.getElementById('admin-current-updates-list');
+            listContainer.innerHTML = '';
+
+            if (RESEARCH_DATA.updates.length === 0) {
+                listContainer.innerHTML = `<div class="text-slate-400 text-center py-2 text-xs">現在登録されているログはありません</div>`;
+                return;
+            }
+
+            // 新しい順
+            const sorted = [...RESEARCH_DATA.updates].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sorted.forEach((up, index) => {
+                // 元配列でのインデックスを取得（削除処理用）
+                const originalIndex = RESEARCH_DATA.updates.findIndex(item => item.date === up.date && item.title === up.title);
+
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100 text-xs';
+                row.innerHTML = `
+                    <div class="truncate mr-4 flex-grow">
+                        <span class="font-mono text-teal-700 font-semibold">[${escapeHTML(up.date)}]</span>
+                        <span class="bg-slate-200 text-slate-700 px-1 py-0.5 rounded text-[10px] mx-1">${escapeHTML(up.category)}</span>
+                        <span class="font-medium text-slate-800">${escapeHTML(up.title)}</span>
+                    </div>
+                    <button onclick="deleteUpdateItem(${originalIndex})" class="text-rose-500 hover:text-rose-700 font-bold px-2 py-1 bg-white hover:bg-rose-50 rounded border border-rose-100 transition">
+                        削除
+                    </button>
+                `;
+                listContainer.appendChild(row);
+            });
+        }
+
+        // ログの新規追加ボタン処理
+        function addNewUpdateItem() {
+            const date = document.getElementById('new-update-date').value;
+            const category = document.getElementById('new-update-category').value;
+            const title = document.getElementById('new-update-title').value.trim();
+            const text = document.getElementById('new-update-text').value.trim();
+
+            if (!date || !title || !text) {
+                showToast("日付、進捗タイトル、内容は必須項目です！", "error");
+                return;
+            }
+
+            // データ配列に追加
+            RESEARCH_DATA.updates.push({ date, category, title, text });
+
+            // 入力欄をクリア
+            document.getElementById('new-update-title').value = '';
+            document.getElementById('new-update-text').value = '';
+
+            // 管理画面リストとメイン画面を更新
+            renderAdminCurrentUpdatesList();
+            renderAll();
+            showToast("活動ログを新しく追加しました！(下部のコードを書き出して保存してください)", "success");
+        }
+
+        // ログの削除処理
+        function deleteUpdateItem(index) {
+            if (index < 0 || index >= RESEARCH_DATA.updates.length) return;
+            
+            if (confirm("この進捗ログを削除しますか？")) {
+                RESEARCH_DATA.updates.splice(index, 1);
+                renderAdminCurrentUpdatesList();
+                renderAll();
+                showToast("進捗ログを1件削除しました。", "success");
+            }
+        }
+
+        // ==============================================
+        // 保存コード書き出し & コピー処理
+        // ==============================================
+
+        // HTML差し替え用JSコード（const RESEARCH_DATA = ...）の生成
+        function generateExportCode() {
+            // 現在のフォーム入力内容を格納
+            saveDraftData();
+
+            const exportedDataStr = JSON.stringify(RESEARCH_DATA, null, 2);
+            const outputCode = `// 【最重要】追記やテーマ変更は、ここを直接書き換えるだけでも完結します！
+// モーダルの「コード出力機能」を使うと、ここを自動で生成してくれます。
+let RESEARCH_DATA = ${exportedDataStr};`;
+
+            document.getElementById('export-textarea').value = outputCode;
+            showToast("設定コードを書き出しました。コピーしてHTMLファイルを上書きしてください！", "success");
+        }
+
+        // 書き出されたコードのクリップボードコピー
+        function copyExportCode() {
+            const textarea = document.getElementById('export-textarea');
+            if (!textarea.value) {
+                showToast("先に「① 設定コードを出力する」ボタンを押してください。", "error");
+                return;
+            }
+
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // モバイル対応
+
+            try {
+                // clipboard APIが環境により使えない場合があるため execCommand('copy') も併用
+                document.execCommand('copy');
+                showToast("コードをクリップボードにコピーしました！ index.htmlファイルを開いて貼り付けてください。", "success");
+            } catch (err) {
+                showToast("コピーに失敗しました。お手数ですが枠内のテキストを手動で全選択してコピーしてください。", "error");
+            }
+        }
+
+        // ==============================================
+        // ユーティリティ関数群
+        // ==============================================
+
+        // エスケープ関数（XSS対策）
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // カスタムトースト通知表示
+        function showToast(message, type = "success") {
+            const toast = document.getElementById('toast-message');
+            const toastText = document.getElementById('toast-text');
+            
+            toastText.innerText = message;
+            toast.classList.remove('hidden');
+
+            if (type === "success") {
+                toast.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl relative transition-all duration-300 flex justify-between items-center";
+            } else {
+                toast.className = "bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-xl relative transition-all duration-300 flex justify-between items-center";
+            }
+
+            // 8秒後に自動で隠す
+            setTimeout(() => {
+                hideToast();
+            }, 8000);
+        }
+
+        function hideToast() {
+            document.getElementById('toast-message').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
+
+```
