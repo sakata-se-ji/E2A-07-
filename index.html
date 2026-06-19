@@ -439,7 +439,7 @@
                             <span>${escapeHTML(sec.title)}</span>
                             <span class="text-xs text-slate-300 font-mono font-normal">#sec-${sec.id}</span>
                         </h3>
-                        <p class="text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-wrap">${escapeHTML(sec.content)}</p>
+                        <div class="text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-wrap">${sec.content}</div>
                     </section>
                 `;
                 container.insertAdjacentHTML('beforeend', sectionHtml);
