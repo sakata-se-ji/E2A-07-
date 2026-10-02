@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -39,7 +38,7 @@
                 <button onclick="switchTab('overview')" id="btn-tab-overview" class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition font-medium">研究概要</button>
                 <button onclick="switchTab('timeline')" id="btn-tab-timeline" class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition font-medium">活動・追記ログ</button>
                 <button onclick="toggleAdminModal(true)" class="px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white transition font-medium flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-9.5a2.5 2.5 0 113.5 3.5L11 19l-4 1 1-4 9.5-9.5z"/></svg>
                     かんたん追記・編集
                 </button>
             </div>
@@ -96,10 +95,10 @@
             <div class="lg:col-span-3 space-y-8">
                 
                 <!-- カスタム通知メッセージ用コンテナ -->
-                <div id="toast-message" class="hidden bg-emerald-100 border border-emerald-300 text-emerald-800 px-4 py-3 rounded-xl relative transition-all duration-300 flex justify-between items-center" role="alert">
+                <div id="toast-message" class="hidden bg-emerald-100 border border-emerald-300 text-emerald-800 px-4 py-3 rounded-xl relative transition-all duration-300 flex justify-between items-center">
                     <span id="toast-text" class="text-sm font-medium">メッセージ</span>
                     <button onclick="hideToast()" class="text-emerald-800 hover:text-emerald-950">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
 
@@ -111,7 +110,7 @@
                             <svg class="w-64 h-64 text-teal-900" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
                         </div>
                         <h2 class="text-lg font-bold text-teal-900 mb-3 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-teal-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <svg class="w-5 h-5 text-teal-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             研究要旨 (Abstract)
                         </h2>
                         <p id="main-abstract" class="text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-wrap">
@@ -133,6 +132,7 @@
                             <p class="text-xs text-slate-500 mt-1">日々の実験、考察、進捗状況を新しい順に公開しています。</p>
                         </div>
                         <button onclick="toggleAdminModal(true)" class="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 px-3 py-1.5 rounded-lg border border-teal-200 transition font-medium flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8h-16"/></svg>
                             + 新しい記録を追記
                         </button>
                     </div>
@@ -167,21 +167,21 @@
             <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
                 <div>
                     <h3 class="font-bold text-lg flex items-center gap-2">
-                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-9.5a2.5 2.5 0 113.5 3.5L11 19l-4 1 1-4 9.5-9.5z"/></svg>
                         研究内容の追記・かんたん編集
                     </h3>
                     <p class="text-xs text-slate-400 mt-0.5">※ブラウザ上で変更・追加し、最後にHTMLに貼り付ける用コードを出力します。</p>
                 </div>
                 <button onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-white transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
             <!-- タブ切り替えボタン -->
             <div class="flex border-b border-slate-200 bg-slate-50 text-sm">
                 <button onclick="switchAdminTab('basic')" id="admin-tab-basic" class="flex-1 py-3 px-4 text-center font-medium border-b-2 border-teal-600 text-teal-600 transition">① 基本情報の修正</button>
-                <button onclick="switchAdminTab('add-update')" id="admin-tab-add-update" class="flex-1 py-3 px-4 text-center font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900 transition">② ログの追記 (活動・進捗)</button>
-                <button onclick="switchAdminTab('sections')" id="admin-tab-sections" class="flex-1 py-3 px-4 text-center font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900 transition">③ 本文・章の編集</button>
+                <button onclick="switchAdminTab('add-update')" id="admin-tab-add-update" class="flex-1 py-3 px-4 text-center font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900 transition">② ログの追記</button>
+                <button onclick="switchAdminTab('sections')" id="admin-tab-sections" class="flex-1 py-3 px-4 text-center font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900 transition">③ 章の編集</button>
             </div>
 
             <!-- モーダルボディ（スクロール可能） -->
@@ -200,16 +200,16 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 mb-1">研究期間</label>
-                            <input type="text" id="edit-period" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="例: 2026年4月 〜 現在">
+                            <input type="text" id="edit-period" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="例: 2026年5月〜2026年11月">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-1">研究メンバー</label>
-                        <textarea id="edit-team" rows="2" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="例: 理数科 生物班 (代表: 山田太郎, 共同研究者: 佐藤花子)"></textarea>
+                        <textarea id="edit-team" rows="2" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="例: 理数科 1年A組 田中、山田"></textarea>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-1">研究要旨 (Abstract)</label>
-                        <textarea id="edit-abstract" rows="4" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="研究の全体像、目的、方法、結果を簡潔にまとめます。"></textarea>
+                        <textarea id="edit-abstract" rows="4" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="研究の全体像を簡潔に記入"></textarea>
                     </div>
                 </div>
 
@@ -235,11 +235,11 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-1">進捗タイトル</label>
-                        <input type="text" id="new-update-title" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="例: 紫外線照射における発芽数の第1次計測完了">
+                        <input type="text" id="new-update-title" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="例: 紫外線計測の精度確認">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-1">活動・進捗の内容（詳細）</label>
-                        <textarea id="new-update-text" rows="4" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="どのような実験を行い、何が判明したか。失敗談や新たな仮説も記録として残すと効果的です。"></textarea>
+                        <textarea id="new-update-text" rows="4" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="どのような作業や結果があったかを記録してください"></textarea>
                     </div>
                     <button type="button" onclick="addNewUpdateItem()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition">
                         活動ログに追加する
@@ -269,11 +269,11 @@
                 <div class="border-t border-slate-200 pt-6 mt-6 space-y-4">
                     <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
                         <h4 class="font-bold text-emerald-900 mb-1 flex items-center gap-1">
-                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5h6"/></svg>
                             HTMLへ変更を保存する方法
                         </h4>
                         <p class="text-xs text-emerald-700 leading-relaxed mb-3">
-                            上のタブで追加・修正を行ったら、必ず下の「設定コードを出力」を押し、コピーした内容をこの `index.html` ファイルの <b>365行目付近（const RESEARCH_DATA = ...）</b> にそのまま貼り付けて上書き保存してください。
+                            上のタブで追加・修正を行ったら、必ず下の「設定コードを出力」を押し、コピーした内容をこの `index.html` ファイルの <b>365行目あたり</b> に貼り付けてください。
                         </p>
                         <div class="flex gap-2">
                             <button onclick="generateExportCode()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition">
@@ -286,7 +286,7 @@
                     </div>
                     
                     <div class="relative">
-                        <textarea id="export-textarea" readonly class="w-full h-48 font-mono text-xs bg-slate-900 text-slate-300 p-3 rounded-lg focus:outline-none" placeholder="「設定コードを出力する」ボタンを押すと、ここに保存用コードが書き出されます。"></textarea>
+                        <textarea id="export-textarea" readonly class="w-full h-48 font-mono text-xs bg-slate-900 text-slate-300 p-3 rounded-lg focus:outline-none" placeholder="「設定コードを出力する」を押すと、ここに貼り付け用コードが表示されます"></textarea>
                     </div>
                 </div>
 
@@ -330,64 +330,60 @@
       "id": "results",
       "title": "3. まとめ・感想",
       "content": ""
-    },
+    }
   ],
   "updates": [
-      {
-      "date":"2026-05-01",
-      "category":"実験",
-      "title":"温感センサーの追随性の実験",
-      "text":"市販の温感センサーと先生自作の温度センサーの追随性を確かめ、今後の参考にした。また班員同士で今後の方針について話し合った。"
-      },//
-      {
+    {
+      "date": "2026-05-01",
+      "category": "実験",
+      "title": "温感センサーの追随性の実験",
+      "text": "市販の温感センサーと先生自作の温度センサーの追随性を確かめ、今後の参考にした。また班員同士で今後の方針について話し合った。"
+    },
+    {
       "date": "2026-05-28",
       "category": "勉強・その他",
       "title": "班員各自の作業",
       "text": "班員はそれぞれ自分の作業や勉強などを行っていた。"
-    },//
+    },
     {
       "date": "2026-06-05",
       "category": "話し合い",
       "title": "購入物品決め",
       "text": "先生のアドバイスを受けながら、班員内で購入する物品を調べ、決定した。"
-    },//
-    
-      {
+    },
+    {
       "date": "2026-06-10",
       "category": "勉強・その他",
       "title": "班員全員で勉強",
       "text": "班員でこれから使う予定の部品の仕様書を読んだ。またマイコンを試しに動かしたりもした。"
-    },//
-       {
+    },
+    {
       "date": "2026-06-19",
       "category": "製作",
       "title": "班員総出で製作",
       "text": "マイコンの製作やマイコンを収納するためのケースの製作を行った。"
-    },//
-       {
+    },
+    {
       "date": "2026-09-11",
       "category": "勉強・その他",
       "title": "回路設計ソフトの練習",
       "text": "先生から基板設計専用ソフトの操作方法についてご指導いただきました。また練習用の部品を調べた。"
-    }//
+    },
     {
       "date": "2026-09-18",
       "category": "勉強・その他",
       "title": "少人数での活動",
-      "text": "班員4人のうち2人が再実習、1人が就職試験。残る1人で基板設計ソフトの練習。後半に再実習メンバーのうちの1人が帰還、その班員も同じく基板設計ソフトの練習。"
-    },//
+      "text": "班員4人のうち2人が再実習、1人が就職試験。残る1人で基板設計ソフトの練習。後半に再実習メンバーのうちの1人が帰還、その班員も同じ作業を行った。"
+    },
     {
       "date": "2026-09-25",
       "category": "製作",
       "title": "基板の製作",
       "text": "先生と共に基板設計ソフトで回路を製作、その後、専用の機械でその基板を製作。"
-    },//
-    
-
-      
-     ]
-};      
-      </script>
+    }
+  ]
+};
+    </script>
 
     <!-- ==============================================
          Webページ制御・レンダリングJS
@@ -396,6 +392,7 @@
         // 起動時にデータを画面に反映
         window.onload = function() {
             renderAll();
+            switchTab('overview');
             // 現在の年を設定
             document.getElementById('footer-year').innerText = new Date().getFullYear();
         };
@@ -465,7 +462,7 @@
                             <span>${escapeHTML(sec.title)}</span>
                             <span class="text-xs text-slate-300 font-mono font-normal">#sec-${sec.id}</span>
                         </h3>
-                        <div class="text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-wrap">${sec.content}</div>
+                        <div class="text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-wrap">${escapeHTML(sec.content)}</div>
                     </section>
                 `;
                 container.insertAdjacentHTML('beforeend', sectionHtml);
@@ -580,15 +577,21 @@
             const content = document.getElementById('admin-modal-content');
             if (show) {
                 // 現在のデータをインプット枠に反映
-                document.getElementById('edit-title').value = RESEARCH_DATA.title;
-                document.getElementById('edit-school').value = RESEARCH_DATA.school;
-                document.getElementById('edit-period').value = RESEARCH_DATA.period;
-                document.getElementById('edit-team').value = RESEARCH_DATA.team;
-                document.getElementById('edit-abstract').value = RESEARCH_DATA.abstract;
+                const titleEl = document.getElementById('edit-title');
+                const schoolEl = document.getElementById('edit-school');
+                const periodEl = document.getElementById('edit-period');
+                const teamEl = document.getElementById('edit-team');
+                const abstractEl = document.getElementById('edit-abstract');
+                if (titleEl) titleEl.value = RESEARCH_DATA.title;
+                if (schoolEl) schoolEl.value = RESEARCH_DATA.school;
+                if (periodEl) periodEl.value = RESEARCH_DATA.period;
+                if (teamEl) teamEl.value = RESEARCH_DATA.team;
+                if (abstractEl) abstractEl.value = RESEARCH_DATA.abstract;
 
                 // 本日日付を初期セット
                 const today = new Date().toISOString().split('T')[0];
-                document.getElementById('new-update-date').value = today;
+                const dateEl = document.getElementById('new-update-date');
+                if (dateEl) dateEl.value = today;
 
                 // 管理モーダルの章編集エリア構築
                 renderAdminSectionsInputs();
@@ -597,7 +600,8 @@
                 renderAdminCurrentUpdatesList();
 
                 // クリア
-                document.getElementById('export-textarea').value = '';
+                const exportArea = document.getElementById('export-textarea');
+                if (exportArea) exportArea.value = '';
 
                 modal.classList.remove('hidden');
                 setTimeout(() => {
@@ -631,11 +635,15 @@
 
             // Tab Buttons Active Styling
             [tabBasic, tabAddUpdate, tabSections].forEach(el => {
-                el.classList.remove('border-teal-600', 'text-teal-600');
-                el.classList.add('border-transparent', 'text-slate-600');
+                if (el) {
+                    el.classList.remove('border-teal-600', 'text-teal-600');
+                    el.classList.add('border-transparent', 'text-slate-600');
+                }
             });
             // Content Sections Toggle
-            [contentBasic, contentAddUpdate, contentSections].forEach(el => el.classList.add('hidden'));
+            [contentBasic, contentAddUpdate, contentSections].forEach(el => {
+                if (el) el.classList.add('hidden');
+            });
 
             if (tabId === 'basic') {
                 tabBasic.classList.add('border-teal-600', 'text-teal-600');
@@ -653,19 +661,28 @@
 
         // 入力フォームから変数への一時セーブ
         function saveDraftData() {
-            RESEARCH_DATA.title = document.getElementById('edit-title').value;
-            RESEARCH_DATA.school = document.getElementById('edit-school').value;
-            RESEARCH_DATA.period = document.getElementById('edit-period').value;
-            RESEARCH_DATA.team = document.getElementById('edit-team').value;
-            RESEARCH_DATA.abstract = document.getElementById('edit-abstract').value;
+            const titleEl = document.getElementById('edit-title');
+            if (titleEl) RESEARCH_DATA.title = titleEl.value;
+
+            const schoolEl = document.getElementById('edit-school');
+            if (schoolEl) RESEARCH_DATA.school = schoolEl.value;
+
+            const periodEl = document.getElementById('edit-period');
+            if (periodEl) RESEARCH_DATA.period = periodEl.value;
+
+            const teamEl = document.getElementById('edit-team');
+            if (teamEl) RESEARCH_DATA.team = teamEl.value;
+
+            const abstractEl = document.getElementById('edit-abstract');
+            if (abstractEl) RESEARCH_DATA.abstract = abstractEl.value;
 
             // 本文章の一時保存
             RESEARCH_DATA.sections.forEach(sec => {
-                const titleEl = document.getElementById(`edit-sec-title-${sec.id}`);
-                const contentEl = document.getElementById(`edit-sec-content-${sec.id}`);
-                if (titleEl && contentEl) {
-                    sec.title = titleEl.value;
-                    sec.content = contentEl.value;
+                const titleInput = document.getElementById(`edit-sec-title-${sec.id}`);
+                const contentInput = document.getElementById(`edit-sec-content-${sec.id}`);
+                if (titleInput && contentInput) {
+                    sec.title = titleInput.value;
+                    sec.content = contentInput.value;
                 }
             });
         }
@@ -673,6 +690,7 @@
         // 管理画面用の章テキスト入力フィールド生成
         function renderAdminSectionsInputs() {
             const container = document.getElementById('admin-sections-list');
+            if (!container) return;
             container.innerHTML = '';
 
             RESEARCH_DATA.sections.forEach(sec => {
@@ -700,6 +718,7 @@
         // 管理画面内の、現在ログ一覧の描画（削除機能用）
         function renderAdminCurrentUpdatesList() {
             const listContainer = document.getElementById('admin-current-updates-list');
+            if (!listContainer) return;
             listContainer.innerHTML = '';
 
             if (RESEARCH_DATA.updates.length === 0) {
@@ -710,7 +729,7 @@
             // 新しい順
             const sorted = [...RESEARCH_DATA.updates].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            sorted.forEach((up, index) => {
+            sorted.forEach((up) => {
                 // 元配列でのインデックスを取得（削除処理用）
                 const originalIndex = RESEARCH_DATA.updates.findIndex(item => item.date === up.date && item.title === up.title);
 
@@ -846,5 +865,3 @@ let RESEARCH_DATA = ${exportedDataStr};`;
     </script>
 </body>
 </html>
-
-```
